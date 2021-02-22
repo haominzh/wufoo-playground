@@ -3,7 +3,7 @@ from typing import NamedTuple, List
 from datetime import datetime
 
 from wufoo_rest.api_caller import execute
-from utils import to_datetime
+from wufoo_rest.utils import to_datetime
 
 TEXT_PROPS = {
     'CommentId': 'comment_id',

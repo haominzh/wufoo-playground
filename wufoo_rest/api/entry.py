@@ -6,7 +6,7 @@ from datetime import datetime
 from enum import Enum
 
 from wufoo_rest.api_caller import execute
-from utils import to_datetime
+from wufoo_rest.utils import to_datetime
 
 TEXT_PROPS = {
     'EntryId': 'entry_id',

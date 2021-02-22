@@ -3,7 +3,7 @@ from typing import NamedTuple, List
 from dataclasses import dataclass
 
 from wufoo_rest.api_caller import execute
-from utils import to_bool, to_int
+from wufoo_rest.utils import to_bool, to_int
 
 FIELD_TEXT_PROPERTY = {
     'Title': 'title',

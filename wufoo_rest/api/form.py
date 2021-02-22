@@ -3,7 +3,7 @@ from typing import NamedTuple, List
 from datetime import datetime
 
 from wufoo_rest.api_caller import execute
-from utils import to_bool, to_datetime, to_int
+from wufoo_rest.utils import to_bool, to_datetime, to_int
 
 TEXT_PROPERTIES = {
     'Name': 'name',
