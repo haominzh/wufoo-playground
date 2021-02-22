@@ -1,124 +1,121 @@
-from typing import List
-
-from wufoo_rest.api_caller import ApiCaller
-from wufoo_rest.api.form import (
-    GetAllFormsRequest,
-    GetFormRequest,
-    FormData
-)
-from wufoo_rest.api.field import (
-    GetFormFieldsRequest,
-    FieldData
-)
-from wufoo_rest.api.comment import (
-    GetCommentsOnFormEntriesRequest,
-    GetCommentsCountOnFormEntries,
-    CommentData
+import argparse
+from wufoo_rest.services import (
+    get_all_forms,
+    get_form,
+    get_form_fields,
+    get_comments_on_form_entries,
+    get_comments_count,
+    get_entries,
+    get_entries_count,
+    submit_entry
 )
 from wufoo_rest.api.entry import (
-    GetEntriesRequest,
-    GetEntriesCountRequest,
-    SubmitEntryRequest,
-    SubmitEntryResponse,
     Filter,
     Grouping,
     Operator,
     Sorting,
-    SortingDirection,
-    EntryData
+    SortingDirection
 )
-
-base_url = 'https://fishbowl.wufoo.com/api/v3/'
-username = 'AOI6-LFKL-VM1Q-IEX9'
-password = 'footastic'
 
 TEST_FORM_ID = 's1afea8b1vk0jf7'
 
-api_caller = ApiCaller(base_url, username, password)
+"""
+key: command
+value: (function, description)
+"""
+all_showcases = {}
+
+
+def showcase(*args, **kwargs):
+    def register(func):
+        command = kwargs['command']
+        description = kwargs['description']
+        all_showcases[command] = (func, description)
+        return func
+    return register
+
+
+@showcase(command='1', description='Show all forms')
+def show_all_forms():
+    print(get_all_forms())
+
+
+@showcase(command='2', description="Show one form")
+def show_one_form():
+    print(get_form(TEST_FORM_ID))
+
+
+@showcase(command='3', description="Show all fields of a form")
+def show_fields():
+    print(get_form_fields(TEST_FORM_ID))
+
+
+@showcase(command='4', description="Show all comments of a form")
+def show_all_comments():
+    print(get_comments_on_form_entries(TEST_FORM_ID))
+
+
+@showcase(command='5', description="Show comments count")
+def show_comments_count():
+    print(get_comments_count(TEST_FORM_ID))
+
+
+@showcase(command='6', description="Show entries with filter and sorting")
+def show_entries():
+    filters = [
+        Filter(id='EntryId', operator=Operator.Is_greater_than, value='1'),
+        Filter(id='EntryId', operator=Operator.Is_less_than, value='5')
+    ]
+    print(
+        get_entries(
+            TEST_FORM_ID,
+            filters=filters,
+            grouping=Grouping.AND,
+            sorting=Sorting(id='EntryId', direction=SortingDirection.DESC)
+        )
+    )
+
+
+@showcase(command='7', description="Show entries count")
+def show_entries_count():
+    print(get_entries_count(TEST_FORM_ID))
+
+
+@showcase(command='8', description="Submit entry (succeeded)")
+def submit_entry_success():
+    values = {
+        'Field1': 'Wufoo',
+        'Field2': 'Test',
+        'Field105': 'API-Test',
+        'Field106': '42'
+    }
+    print(submit_entry(TEST_FORM_ID, values))
+
+
+@showcase(command='9', description="Submit entry (failed)")
+def submit_entry_fail():
+    values = {
+        'Field1': 'Wufoo',
+        'Field2': 'Test',
+        'Field106': 'Fail'
+    }
+    print(submit_entry(TEST_FORM_ID, values))
+
 
 def main():
-    """show all forms"""
-    # print(get_all_forms())
+    parser = argparse.ArgumentParser(description="Wufoo rest API showcases")
+    parser.add_argument('-l', '--list', action='store_true', help='List all commands')
+    parser.add_argument('-c', '--command', type=str, help='Showcase command')
+    args = parser.parse_args()
 
-    """show one form"""
-    # print(get_form(TEST_FORM_ID))
+    if args.list:
+        for key in all_showcases:
+            print(f'Command {key} | Description: {all_showcases.get(key)[1]}')
+    elif args.command:
+        if args.command not in all_showcases:
+            raise Exception(f'Command {args.command} not supported')
+        all_showcases.get(args.command)[0]()
 
-    """show all fields of a form"""
-    # print(get_form_fields(TEST_FORM_ID))
-
-    """show all comments of a form entries"""
-    # print(get_comments_on_form_entries(TEST_FORM_ID))
-
-    """show comments count of a form"""
-    # print(get_comments_count(TEST_FORM_ID))
-
-    """show entries with filters"""
-    # filters = [
-    #     Filter(id='EntryId', operator=Operator.Is_greater_than, value='1'),
-    #     Filter(id='EntryId', operator=Operator.Is_less_than, value='5')
-    # ]
-    # print(
-    #     get_entries(
-    #         TEST_FORM_ID, 
-    #         filters=filters, 
-    #         grouping=Grouping.AND, 
-    #         sorting=Sorting(id='EntryId', direction=SortingDirection.DESC)
-    #     )
-    # )
-
-    """show entries count"""
-    # print(get_entries_count(TEST_FORM_ID))
-
-    """submit entry (success)"""
-    # values = {
-    #     'Field1' : 'Wufoo',
-    #     'Field2' : 'Test',
-    #     'Field105' : 'API-Test',
-    #     'Field106' : '42'
-    # }
-    # print(submit_entry(TEST_FORM_ID, values))
-
-    """submit entry (fail)"""
-    # values = {
-    #     'Field1' : 'Wufoo',
-    #     'Field2' : 'Test',
-    #     'Field106' : 'Fail'
-    # }
-    # print(submit_entry(TEST_FORM_ID, values))
-
-
-    
-def get_all_forms() -> List[FormData]:
-    req = GetAllFormsRequest()
-    return api_caller.call(req)
-
-def get_form(id: str) -> FormData:
-    req = GetFormRequest(identifier=id)
-    return api_caller.call(req)
-
-def get_form_fields(id: str) -> List[FieldData]:
-    req = GetFormFieldsRequest(form_identifier=id)
-    return api_caller.call(req)
-
-def get_comments_on_form_entries(id: str) -> List[CommentData]:
-    req = GetCommentsOnFormEntriesRequest(form_identifier=id)
-    return api_caller.call(req)
-
-def get_comments_count(id: str) -> int:
-    req = GetCommentsCountOnFormEntries(form_identifier=id)
-    return api_caller.call(req)
-
-def get_entries(id: str, **kwargs) -> List[EntryData]:
-    req = GetEntriesRequest(form_identifier=id, **kwargs)
-    return api_caller.call(req)
-
-def get_entries_count(id: str) -> int:
-    req = GetEntriesCountRequest(form_identifier=id)
-    return api_caller.call(req)
-
-def submit_entry(id: str, data: dict) -> SubmitEntryResponse:
-    req = SubmitEntryRequest(form_identifier=id, fields=data)
-    return api_caller.call(req)
 
 if __name__ == '__main__':
     main()

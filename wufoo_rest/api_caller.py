@@ -23,6 +23,7 @@ class ApiCaller:
     def call(self, request):
         return execute(request, self.base_url, self.username, self.password)
 
+
 @singledispatch
 def execute(request, base_url: str, username: str, password: str):
     raise NotImplementedError('Unsupported type')

@@ -86,6 +86,7 @@ class GetFormRequest(NamedTuple):
     identifier: str
     include_today_count: bool = False
 
+
 @execute.register(GetFormRequest)
 def _(request: GetFormRequest, base_url: str, username: str, password: str) -> FormData:
     url = base_url + f'forms/{request.identifier}.json'

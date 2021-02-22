@@ -16,10 +16,11 @@ A simple playground of Wufoo v3 APIs. https://wufoo.github.io/docs/#
 wufoo-playground
     │──── README.md
     │──── requirements.txt
-    │──── playground.py                   # main method for show case
+    │──── playground.py                   # main method for show cases
     └──── wufoo_rest
               │──── api_caller.py         # An api gateway
               │──── utils.py              # util functions
+              │──── services.py           # endpoints wrapper
               └──── api
                      │──── comment.py     # Comments requests and responses
                      │──── entry.py       # Entry requests and responses

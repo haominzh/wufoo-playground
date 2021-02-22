@@ -16,11 +16,13 @@ DATETIME_PROPS = {
     'DateCreated': 'date_created'
 }
 
+
 class GetCommentsOnFormEntriesRequest(NamedTuple):
     form_identifier: str
     entry_id: str = None
     page_start: int = 0
     page_size: int = 25
+
 
 class CommentData(NamedTuple):
     comment_id: str
@@ -36,6 +38,7 @@ class CommentData(NamedTuple):
 
         return cls(**text_props, **datetime_props)
 
+
 @execute.register(GetCommentsOnFormEntriesRequest)
 def _(request: GetCommentsOnFormEntriesRequest, base_url: str, username: str, password: str) -> List[CommentData]:
     url = base_url + f'forms/{request.form_identifier}/comments.json'
@@ -50,7 +53,6 @@ def _(request: GetCommentsOnFormEntriesRequest, base_url: str, username: str, pa
     if request.page_size != 25 and request.page_size > 0:
         params['pageSize'] = min(request.page_size, 100)
 
-
     response = requests.get(url, params=params, auth=(username, password))
     response.raise_for_status()
     data = response.json()
@@ -59,6 +61,7 @@ def _(request: GetCommentsOnFormEntriesRequest, base_url: str, username: str, pa
 
 class GetCommentsCountOnFormEntries(NamedTuple):
     form_identifier: str
+
 
 @execute.register(GetCommentsCountOnFormEntries)
 def _(request: GetCommentsCountOnFormEntries, base_url: str, username: str, password: str) -> int:

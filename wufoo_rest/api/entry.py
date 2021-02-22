@@ -68,8 +68,9 @@ class Sorting(NamedTuple):
     id: str
     direction: SortingDirection
 
-def convert_filter_to_param(filter: Filter) -> str:
-    return f'{filter.id}+{filter.operator.name}+{filter.value}'
+
+def convert_filter_to_param(entry_filter: Filter) -> str:
+    return f'{entry_filter.id}+{entry_filter.operator.name}+{entry_filter.value}'
 
 
 class GetEntriesRequest(NamedTuple):
@@ -80,6 +81,7 @@ class GetEntriesRequest(NamedTuple):
     filters: List[Filter] = None
     grouping: Grouping = None
     sorting: Sorting = None
+
 
 class EntryData(NamedTuple):
     entry_id: str
@@ -99,6 +101,7 @@ class EntryData(NamedTuple):
         if system:
             system_props = {k: payload.get(k) for k in SYSTEM_PROPS if k in payload}
         return cls(fields=field_props, system=system_props, **text_props, **datetime_props)
+
 
 @execute.register(GetEntriesRequest)
 def _(request: GetEntriesRequest, base_url: str, username: str, password: str) -> List[EntryData]:
@@ -147,6 +150,7 @@ def _(request: GetEntriesRequest, base_url: str, username: str, password: str) -
 class GetEntriesCountRequest(NamedTuple):
     form_identifier: str
 
+
 @execute.register(GetEntriesCountRequest)
 def _(request: GetEntriesCountRequest, base_url: str, username: str, password: str) -> int:
     url = base_url + f'forms/{request.form_identifier}/entries/count.json'
@@ -164,6 +168,7 @@ class SubmitEntryRequest(NamedTuple):
 
 class SubmitEntryResponse(NamedTuple):
     response: dict
+
 
 @execute.register(SubmitEntryRequest)
 def _(request: SubmitEntryRequest, base_url: str, username: str, password: str) -> SubmitEntryResponse:

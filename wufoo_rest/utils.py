@@ -1,12 +1,16 @@
 from datetime import datetime
+from typing import Optional
+
 
 def to_bool(value: str) -> bool:
     return True if value == '1' else False
 
+
 def to_int(value: str) -> int:
     return int(value) if value else 0
 
-def to_datetime(value: str) -> datetime:
+
+def to_datetime(value: str) -> Optional[datetime]:
     if not value:
         return None
 

@@ -37,11 +37,13 @@ class GetFormFieldsRequest(NamedTuple):
     form_identifier: str
     system: bool = False
 
+
 def get_field_props(payload):
     text_props = {FIELD_TEXT_PROPERTY.get(prop): payload.get(prop, '') for prop in FIELD_TEXT_PROPERTY}
     int_props = {FIELD_INT_PROPERTY.get(prop): to_int(payload.get(prop, 0)) for prop in FIELD_INT_PROPERTY}
     bool_props = {FIELD_BOOL_PROPERTY.get(prop): to_bool(payload.get(prop, False)) for prop in FIELD_BOOL_PROPERTY}
     return {**text_props, **int_props, **bool_props}
+
 
 @dataclass
 class Field:
@@ -59,6 +61,7 @@ class Field:
         props = get_field_props(payload)
         return cls(**props)
 
+
 @dataclass
 class ChoicesField(Field):
     has_other_field: bool
@@ -69,6 +72,7 @@ class ChoicesField(Field):
         field_props = get_field_props(payload)
         choices_props = {CHOICES_FILED_PROPERTY.get(prop): payload.get(prop, None) for prop in CHOICES_FILED_PROPERTY}
         return cls(**field_props, **choices_props)
+
 
 @dataclass
 class FieldData(Field):
