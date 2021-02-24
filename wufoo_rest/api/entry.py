@@ -167,7 +167,7 @@ class SubmitEntryRequest(NamedTuple):
 
 
 class SubmitEntryResponse(NamedTuple):
-    response: dict
+    detail: dict
 
 
 @execute.register(SubmitEntryRequest)
