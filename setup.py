@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="wufoo-playground",
+    name="wufoo_playground",
     version="0.0.1",
     author="Haomin Zhang",
     url="https://github.com/haominzh/wufoo-playground",
