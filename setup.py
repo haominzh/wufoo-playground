@@ -3,11 +3,11 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="wufoo_playground",
+    name="wufoo_rest",
     version="0.0.1",
     author="Haomin Zhang",
     url="https://github.com/haominzh/wufoo-playground",
-    description='Wufoo REST API playground',
+    description='Wufoo REST API client',
     long_description=open('README.md').read(),
     keywords='python',
     classifiers=[
@@ -15,6 +15,6 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
         ],
-    packages=find_packages(),
+    packages=['wufoo_rest'],
     include_package_data=True,
     )

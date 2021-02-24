@@ -14,15 +14,17 @@ A simple playground of Wufoo v3 APIs. https://wufoo.github.io/docs/#
 #### Project structure:
 ```
 wufoo-playground
-    │──── client.py                       # endpoints wrapper
     │──── playground.py                   # main method for show cases
     │──── README.md
     │──── requirements.txt
     │──── setup.py
     └──── /wufoo_rest
+              │──── __init__.py
+              │──── client.py             # endpoints wrapper
               │──── api_caller.py         # An api gateway
               │──── utils.py              # util functions
               └──── /api
+                     │──── __init__.py
                      │──── comment.py     # Comments requests and responses
                      │──── entry.py       # Entry requests and responses
                      │──── field.py       # Field requests and responses

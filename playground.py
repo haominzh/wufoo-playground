@@ -1,5 +1,5 @@
 import argparse
-from client import WufooClient
+from wufoo_rest.client import WufooClient
 from wufoo_rest.api.entry import (
     Filter,
     Grouping,
