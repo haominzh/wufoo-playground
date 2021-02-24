@@ -1,14 +1,5 @@
 import argparse
-from wufoo_rest.services import (
-    get_all_forms,
-    get_form,
-    get_form_fields,
-    get_comments_on_form_entries,
-    get_comments_count,
-    get_entries,
-    get_entries_count,
-    submit_entry
-)
+from client import WufooClient
 from wufoo_rest.api.entry import (
     Filter,
     Grouping,
@@ -17,6 +8,9 @@ from wufoo_rest.api.entry import (
     SortingDirection
 )
 
+subdomain = 'fishbowl'
+username = 'AOI6-LFKL-VM1Q-IEX9'
+password = 'footastic'
 TEST_FORM_ID = 's1afea8b1vk0jf7'
 
 """
@@ -24,6 +18,7 @@ key: command
 value: (function, description)
 """
 all_showcases = {}
+wf_client = WufooClient(subdomain, username, password)
 
 
 def showcase(*args, **kwargs):
@@ -37,27 +32,27 @@ def showcase(*args, **kwargs):
 
 @showcase(command='1', description='Show all forms')
 def show_all_forms():
-    print(get_all_forms())
+    print(wf_client.get_all_forms())
 
 
 @showcase(command='2', description="Show one form")
 def show_one_form():
-    print(get_form(TEST_FORM_ID))
+    print(wf_client.get_form(TEST_FORM_ID))
 
 
 @showcase(command='3', description="Show all fields of a form")
 def show_fields():
-    print(get_form_fields(TEST_FORM_ID))
+    print(wf_client.get_form_fields(TEST_FORM_ID))
 
 
 @showcase(command='4', description="Show all comments of a form")
 def show_all_comments():
-    print(get_comments_on_form_entries(TEST_FORM_ID))
+    print(wf_client.get_comments_on_form_entries(TEST_FORM_ID))
 
 
 @showcase(command='5', description="Show comments count")
 def show_comments_count():
-    print(get_comments_count(TEST_FORM_ID))
+    print(wf_client.get_comments_count(TEST_FORM_ID))
 
 
 @showcase(command='6', description="Show entries with filter and sorting")
@@ -67,7 +62,7 @@ def show_entries():
         Filter(id='EntryId', operator=Operator.Is_less_than, value='5')
     ]
     print(
-        get_entries(
+        wf_client.get_entries(
             TEST_FORM_ID,
             filters=filters,
             grouping=Grouping.AND,
@@ -78,7 +73,7 @@ def show_entries():
 
 @showcase(command='7', description="Show entries count")
 def show_entries_count():
-    print(get_entries_count(TEST_FORM_ID))
+    print(wf_client.get_entries_count(TEST_FORM_ID))
 
 
 @showcase(command='8', description="Submit entry (succeeded)")
@@ -89,7 +84,7 @@ def submit_entry_success():
         'Field105': 'API-Test',
         'Field106': '42'
     }
-    print(submit_entry(TEST_FORM_ID, values))
+    print(wf_client.submit_entry(TEST_FORM_ID, values))
 
 
 @showcase(command='9', description="Submit entry (failed)")
@@ -99,7 +94,7 @@ def submit_entry_fail():
         'Field2': 'Test',
         'Field106': 'Fail'
     }
-    print(submit_entry(TEST_FORM_ID, values))
+    print(wf_client.submit_entry(TEST_FORM_ID, values))
 
 
 def main():
