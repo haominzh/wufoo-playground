@@ -15,6 +15,6 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
         ],
-    packages=['wufoo_rest'],
+    packages=find_packages(),
     include_package_data=True,
     )
