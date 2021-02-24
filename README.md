@@ -30,3 +30,43 @@ wufoo-playground
                      │──── field.py       # Field requests and responses
                      └──── form.py        # Form requests and responses
 ```
+
+#### Example:
+```python
+import csv
+import io
+from wufoo_rest.client import WufooClient
+
+subdomain = 'fishbowl'
+username = 'AOI6-LFKL-VM1Q-IEX9'
+password = 'footastic'
+
+ENTRY = """FormID,Field1,Field2,Field105,Field106
+s1afea8b1vk0jf7,Wufoo,test,API-Test,42
+s1afea8b1vk0jf7,Wufoo,Test,,Failed
+"""
+
+wf_client = WufooClient(subdomain, username, password)
+
+reader = csv.DictReader(io.StringIO(ENTRY))
+for row in reader:
+    form_id = row.pop('FormID')
+    res = wf_client.submit_entry(form_id, row).detail
+    if res['Success'] == 1:
+        print(f'Submit {row} to form [{form_id}] succeeded')
+    else:
+        print(f'Submit {row} to form [{form_id}] Failed')
+        print('=' * 50)
+        print(res['ErrorText'])
+        print(res['FieldErrors'])
+        print('=' * 50)
+```
+Output:
+```
+Submit {'Field1': 'Wufoo', 'Field2': 'test', 'Field105': 'API-Test', 'Field106': '42'} to form [s1afea8b1vk0jf7] succeeded
+Submit {'Field1': 'Wufoo', 'Field2': 'Test', 'Field105': '', 'Field106': 'Failed'} to form [s1afea8b1vk0jf7] Failed
+==================================================
+Errors have been <b>highlighted</b> below.
+[{'ID': 'Field105', 'ErrorText': 'This field is required. Please enter a value.'}, {'ID': 'Field106', 'ErrorText': 'Please enter a numeric value.'}]
+==================================================
+```
