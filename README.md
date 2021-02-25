@@ -10,6 +10,11 @@ A simple playground of Wufoo v3 APIs. https://wufoo.github.io/docs/#
 * Fetch entries (with filter and sorting)
 * Fetch entries count
 * Submit entry
+* Fetch reports
+* Fetch single report
+* Fetch report entries
+* Fetch report entries count
+* Fetch report fields
 
 #### Project structure:
 ```
@@ -28,6 +33,7 @@ wufoo-playground
                      │──── comment.py     # Comments requests and responses
                      │──── entry.py       # Entry requests and responses
                      │──── field.py       # Field requests and responses
+                     │──── report.py      # Report requests and responses
                      └──── form.py        # Form requests and responses
 ```
 
@@ -51,14 +57,15 @@ wf_client = WufooClient(subdomain, username, password)
 reader = csv.DictReader(io.StringIO(ENTRY))
 for row in reader:
     form_id = row.pop('FormID')
-    res = wf_client.submit_entry(form_id, row).detail
-    if res['Success'] == 1:
+    res = wf_client.submit_entry(form_id, row)
+    if res.success:
         print(f'Submit {row} to form [{form_id}] succeeded')
     else:
         print(f'Submit {row} to form [{form_id}] Failed')
         print('=' * 50)
-        print(res['ErrorText'])
-        print(res['FieldErrors'])
+        print(
+            f"{res.detail['ErrorText']}\n{res.detail['FieldErrors']}"
+        )
         print('=' * 50)
 ```
 Output:

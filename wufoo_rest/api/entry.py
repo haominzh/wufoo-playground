@@ -6,7 +6,7 @@ from datetime import datetime
 from enum import Enum
 
 from wufoo_rest.api_caller import execute
-from wufoo_rest.utils import to_datetime
+from wufoo_rest.utils import get_formatted_datetime_props, get_formatted_text_props
 
 TEXT_PROPS = {
     'EntryId': 'entry_id',
@@ -94,8 +94,8 @@ class EntryData(NamedTuple):
 
     @classmethod
     def from_payload(cls, payload, system: bool = False):
-        text_props = {TEXT_PROPS.get(prop): payload.get(prop, '') for prop in TEXT_PROPS}
-        datetime_props = {DATETIME_PROPS.get(prop): to_datetime(payload.get(prop, None)) for prop in DATETIME_PROPS}
+        text_props = get_formatted_text_props(TEXT_PROPS, payload)
+        datetime_props = get_formatted_datetime_props(DATETIME_PROPS, payload)
         field_props = {k: payload.get(k) for k in payload if field_pattern.match(k)}
         system_props = {}
         if system:
@@ -144,7 +144,7 @@ def _(request: GetEntriesRequest, base_url: str, username: str, password: str) -
     response = requests.get(url, params=params_str, auth=(username, password))
     response.raise_for_status()
     data = response.json()['Entries']
-    return [EntryData.from_payload(e, system=request.system) for e in data]
+    return [EntryData.from_payload(entry, system=request.system) for entry in data]
 
     
 class GetEntriesCountRequest(NamedTuple):
@@ -167,6 +167,7 @@ class SubmitEntryRequest(NamedTuple):
 
 
 class SubmitEntryResponse(NamedTuple):
+    success: bool
     detail: dict
 
 
@@ -175,4 +176,6 @@ def _(request: SubmitEntryRequest, base_url: str, username: str, password: str) 
     url = base_url + f'forms/{request.form_identifier}/entries.json'
     response = requests.post(url, data=request.fields, auth=(username, password))
     response.raise_for_status()
-    return SubmitEntryResponse(response.json())
+    data = response.json()
+    success = data.pop('Success') == 1
+    return SubmitEntryResponse(success, data)

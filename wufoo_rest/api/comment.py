@@ -3,7 +3,7 @@ from typing import NamedTuple, List
 from datetime import datetime
 
 from wufoo_rest.api_caller import execute
-from wufoo_rest.utils import to_datetime
+from wufoo_rest.utils import get_formatted_datetime_props, get_formatted_text_props
 
 TEXT_PROPS = {
     'CommentId': 'comment_id',
@@ -33,8 +33,8 @@ class CommentData(NamedTuple):
 
     @classmethod
     def from_payload(cls, payload):
-        text_props = {TEXT_PROPS.get(prop): payload.get(prop, '') for prop in TEXT_PROPS}
-        datetime_props = {DATETIME_PROPS.get(prop): to_datetime(payload.get(prop, None)) for prop in DATETIME_PROPS}
+        text_props = get_formatted_text_props(TEXT_PROPS, payload)
+        datetime_props = get_formatted_datetime_props(DATETIME_PROPS, payload)
 
         return cls(**text_props, **datetime_props)
 
@@ -59,12 +59,12 @@ def _(request: GetCommentsOnFormEntriesRequest, base_url: str, username: str, pa
     return [CommentData.from_payload(f) for f in data['Comments']]
 
 
-class GetCommentsCountOnFormEntries(NamedTuple):
+class GetCommentsCountOnFormEntriesRequest(NamedTuple):
     form_identifier: str
 
 
-@execute.register(GetCommentsCountOnFormEntries)
-def _(request: GetCommentsCountOnFormEntries, base_url: str, username: str, password: str) -> int:
+@execute.register(GetCommentsCountOnFormEntriesRequest)
+def _(request: GetCommentsCountOnFormEntriesRequest, base_url: str, username: str, password: str) -> int:
     url = base_url + f'forms/{request.form_identifier}/comments/count.json'
 
     response = requests.get(url, auth=(username, password))

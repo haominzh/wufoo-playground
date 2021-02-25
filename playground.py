@@ -12,6 +12,7 @@ subdomain = 'fishbowl'
 username = 'AOI6-LFKL-VM1Q-IEX9'
 password = 'footastic'
 TEST_FORM_ID = 's1afea8b1vk0jf7'
+TEST_REPORT_ID = 'qa4d98l1ib9or7'
 
 """
 key: command
@@ -95,6 +96,31 @@ def submit_entry_fail():
         'Field106': 'Fail'
     }
     print(wf_client.submit_entry(TEST_FORM_ID, values))
+
+
+@showcase(command='10', description="Show all reports")
+def show_all_reports():
+    print(wf_client.get_all_reports())
+    
+
+@showcase(command='11', description="Show one report")
+def show_report():
+    print(wf_client.get_report('qa4d98l1ib9or7'))
+
+
+@showcase(command='12', description="Show report entries")
+def show_report_entries():
+    print(wf_client.get_report_entries('qa4d98l1ib9or7'))
+
+
+@showcase(command='13', description="Show report entries count")
+def show_report_entries():
+    print(wf_client.get_report_entries_count('qa4d98l1ib9or7'))
+
+
+@showcase(command='14', description="Show report fields")
+def show_report_entries():
+    print(wf_client.get_report_fields('qa4d98l1ib9or7'))
 
 
 def main():

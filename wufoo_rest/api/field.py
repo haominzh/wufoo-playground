@@ -3,7 +3,11 @@ from typing import NamedTuple, List
 from dataclasses import dataclass
 
 from wufoo_rest.api_caller import execute
-from wufoo_rest.utils import to_bool, to_int
+from wufoo_rest.utils import (
+    get_formatted_text_props,
+    get_formatted_int_props,
+    get_formatted_bool_props
+)
 
 FIELD_TEXT_PROPERTY = {
     'Title': 'title',
@@ -39,9 +43,9 @@ class GetFormFieldsRequest(NamedTuple):
 
 
 def get_field_props(payload):
-    text_props = {FIELD_TEXT_PROPERTY.get(prop): payload.get(prop, '') for prop in FIELD_TEXT_PROPERTY}
-    int_props = {FIELD_INT_PROPERTY.get(prop): to_int(payload.get(prop, 0)) for prop in FIELD_INT_PROPERTY}
-    bool_props = {FIELD_BOOL_PROPERTY.get(prop): to_bool(payload.get(prop, False)) for prop in FIELD_BOOL_PROPERTY}
+    text_props = get_formatted_text_props(FIELD_TEXT_PROPERTY, payload)
+    int_props = get_formatted_int_props(FIELD_INT_PROPERTY, payload)
+    bool_props = get_formatted_bool_props(FIELD_BOOL_PROPERTY, payload)
     return {**text_props, **int_props, **bool_props}
 
 

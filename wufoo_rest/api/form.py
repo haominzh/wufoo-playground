@@ -3,7 +3,12 @@ from typing import NamedTuple, List
 from datetime import datetime
 
 from wufoo_rest.api_caller import execute
-from wufoo_rest.utils import to_bool, to_datetime, to_int
+from wufoo_rest.utils import (
+    get_formatted_text_props,
+    get_formatted_bool_props,
+    get_formatted_int_props,
+    get_formatted_datetime_props
+)
 
 TEXT_PROPERTIES = {
     'Name': 'name',
@@ -58,10 +63,10 @@ class FormData(NamedTuple):
 
     @classmethod
     def from_payload(cls, payload):
-        text_props = {TEXT_PROPERTIES.get(prop): payload.get(prop, '') for prop in TEXT_PROPERTIES}
-        int_props = {INT_PROPERTIES.get(prop): to_int(payload.get(prop, 0)) for prop in INT_PROPERTIES}
-        bool_props = {BOOL_PROPERTIES.get(prop): to_bool(payload.get(prop, False)) for prop in BOOL_PROPERTIES}
-        datetime_props = {DATETIME_PROPERTIES.get(prop): to_datetime(payload.get(prop, None)) for prop in DATETIME_PROPERTIES}
+        text_props = get_formatted_text_props(TEXT_PROPERTIES, payload)
+        int_props = get_formatted_int_props(INT_PROPERTIES, payload)
+        bool_props = get_formatted_bool_props(BOOL_PROPERTIES, payload)
+        datetime_props = get_formatted_datetime_props(DATETIME_PROPERTIES, payload)
 
         return cls(**text_props, **int_props, **bool_props, **datetime_props)
 

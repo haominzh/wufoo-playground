@@ -12,7 +12,7 @@ from wufoo_rest.api.field import (
 )
 from wufoo_rest.api.comment import (
     GetCommentsOnFormEntriesRequest,
-    GetCommentsCountOnFormEntries,
+    GetCommentsCountOnFormEntriesRequest,
     CommentData
 )
 from wufoo_rest.api.entry import (
@@ -21,6 +21,14 @@ from wufoo_rest.api.entry import (
     SubmitEntryRequest,
     SubmitEntryResponse,
     EntryData
+)
+from wufoo_rest.api.report import (
+    GetAllReportsRequest,
+    GetReportRequest,
+    GetReportEntriesRequest,
+    GetReportEntriesCountRequest,
+    GetReportFieldsRequest,
+    ReportData
 )
 
 
@@ -47,7 +55,7 @@ class WufooClient:
         return self.api_caller.call(req)
     
     def get_comments_count(self, form_id: str) -> int:
-        req = GetCommentsCountOnFormEntries(form_identifier=form_id)
+        req = GetCommentsCountOnFormEntriesRequest(form_identifier=form_id)
         return self.api_caller.call(req)
 
     def get_entries(self, form_id: str, **kwargs) -> List[EntryData]:
@@ -60,4 +68,24 @@ class WufooClient:
     
     def submit_entry(self, form_id: str, data: dict) -> SubmitEntryResponse:
         req = SubmitEntryRequest(form_identifier=form_id, fields=data)
+        return self.api_caller.call(req)
+
+    def get_all_reports(self) -> List[ReportData]:
+        req = GetAllReportsRequest()
+        return self.api_caller.call(req)
+
+    def get_report(self, report_id: str) -> ReportData:
+        req = GetReportRequest(report_identifier=report_id)
+        return self.api_caller.call(req)
+
+    def get_report_entries(self, report_id: str) -> List[EntryData]:
+        req = GetReportEntriesRequest(report_identifier=report_id)
+        return self.api_caller.call(req)
+
+    def get_report_entries_count(self, report_id: str) -> int:
+        req = GetReportEntriesCountRequest(report_identifier=report_id)
+        return self.api_caller.call(req)
+
+    def get_report_fields(self, report_id: str) -> List[FieldData]:
+        req = GetReportFieldsRequest(report_identifier=report_id)
         return self.api_caller.call(req)
