@@ -15,6 +15,10 @@ A simple playground of Wufoo v3 APIs. https://wufoo.github.io/docs/#
 * Fetch report entries
 * Fetch report entries count
 * Fetch report fields
+* Fetch report widgets
+* Fetch all users
+* Add/Delete webhook
+* Retrieve API key
 
 #### Project structure:
 ```
@@ -25,8 +29,8 @@ wufoo-playground
     │──── setup.py
     └──── /wufoo_rest
               │──── __init__.py
-              │──── client.py             # endpoints wrapper
-              │──── api_caller.py         # An api gateway
+              │──── client.py             # Wufoo rest client
+              │──── api_caller.py         # An api delegater
               │──── utils.py              # util functions
               └──── /api
                      │──── __init__.py
@@ -34,7 +38,15 @@ wufoo-playground
                      │──── entry.py       # Entry requests and responses
                      │──── field.py       # Field requests and responses
                      │──── report.py      # Report requests and responses
-                     └──── form.py        # Form requests and responses
+                     │──── form.py        # Form requests and responses
+                     │──── user.py        # User requests and responses
+                     │──── webhook.py     # Webhook requests and responses
+                     └──── login.py       # Retrieve API key
+```
+
+#### Install:
+```
+pip install git+https://github.com/haominzh/wufoo-playground
 ```
 
 #### Example:

@@ -117,3 +117,38 @@ def _(request: GetReportFieldsRequest, base_url: str, username: str, password: s
     response.raise_for_status()
     data = response.json()['Fields']
     return [FieldData.from_payload(f) for f in data]
+
+
+class GetWidgetsRequest(NamedTuple):
+    report_identifier: str
+
+
+WIDGET_PROPS = {
+    'Name': 'name',
+    'Size': 'size',
+    'Type': 'type',
+    'TypeDesc': 'type_description',
+    'Hash': 'hash'
+}
+
+
+class WidgetsData(NamedTuple):
+    name: str
+    size: str
+    type: str
+    type_description: str
+    hash: str
+
+    @classmethod
+    def from_payload(cls, payload):
+        props = get_formatted_text_props(WIDGET_PROPS, payload)
+        return cls(**props)
+
+
+@execute.register(GetWidgetsRequest)
+def _(request: GetWidgetsRequest, base_url: str, username: str, password: str) -> List[WidgetsData]:
+    url = base_url + f'reports/{request.report_identifier}/widgets.json'
+    response = requests.get(url, auth=(username, password))
+    response.raise_for_status()
+    data = response.json()['Widgets']
+    return [WidgetsData.from_payload(f) for f in data]

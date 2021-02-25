@@ -19,7 +19,8 @@ key: command
 value: (function, description)
 """
 all_showcases = {}
-wf_client = WufooClient(subdomain, username, password)
+# wf_client = WufooClient(subdomain, username, password)
+wf_client = WufooClient.login('XXX', 'fishbowl@wufoo.com', 'XXX', 'fishbowl')
 
 
 def showcase(*args, **kwargs):
@@ -105,22 +106,40 @@ def show_all_reports():
 
 @showcase(command='11', description="Show one report")
 def show_report():
-    print(wf_client.get_report('qa4d98l1ib9or7'))
+    print(wf_client.get_report(TEST_REPORT_ID))
 
 
 @showcase(command='12', description="Show report entries")
 def show_report_entries():
-    print(wf_client.get_report_entries('qa4d98l1ib9or7'))
+    print(wf_client.get_report_entries(TEST_REPORT_ID))
 
 
 @showcase(command='13', description="Show report entries count")
 def show_report_entries():
-    print(wf_client.get_report_entries_count('qa4d98l1ib9or7'))
+    print(wf_client.get_report_entries_count(TEST_REPORT_ID))
 
 
 @showcase(command='14', description="Show report fields")
 def show_report_entries():
-    print(wf_client.get_report_fields('qa4d98l1ib9or7'))
+    print(wf_client.get_report_fields(TEST_REPORT_ID))
+
+
+@showcase(command='15', description="Show report widgets")
+def show_report_widgets():
+    print(wf_client.get_report_widgets(TEST_REPORT_ID))
+
+
+@showcase(command='16', description="Show all users")
+def show_all_users():
+    print(wf_client.get_all_users())
+
+
+@showcase(command='17', description="Put and delete webhook")
+def put_webhook():
+    wh_response = wf_client.put_webhook(TEST_FORM_ID, 'https://www.wufoo.com', 'secret123', True)
+    print(f'Webhook {wh_response.hash} is created on form {TEST_FORM_ID}')
+    wh_response = wf_client.delete_webhook(TEST_FORM_ID, wh_response.hash)
+    print(f'Webhook {wh_response.hash} on form {TEST_FORM_ID} is deleted')
 
 
 def main():

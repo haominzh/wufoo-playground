@@ -28,8 +28,21 @@ from wufoo_rest.api.report import (
     GetReportEntriesRequest,
     GetReportEntriesCountRequest,
     GetReportFieldsRequest,
-    ReportData
+    GetWidgetsRequest,
+    ReportData,
+    WidgetsData
 )
+from wufoo_rest.api.user import (
+    GetAllUsersRequest,
+    UserData
+)
+from wufoo_rest.api.webhook import (
+    PutWebhookRequest,
+    DeleteWebhookRequest,
+    PutWebhookResponse,
+    DeleteWebhookResponse,
+)
+from wufoo_rest.api.login import RetrieveApiKeyRequest, retrieve_api_key
 
 
 class WufooClient:
@@ -37,6 +50,18 @@ class WufooClient:
     def __init__(self, subdomain: str, username: str, password: str):
         base_url = f'https://{subdomain}.wufoo.com/api/v3/'
         self.api_caller = ApiCaller(base_url, username, password)
+
+    @classmethod
+    def login(cls, integration_key: str, email: str, password: str, subdomain: str):
+        """
+        This request allows approved partners to access users API Keys.
+        This is useful for custom integrations that need to make API requests on behalf of Wufoo users.
+        For example, Zapier uses this method to set up new integrations, without requiring users to
+        use or even know their own API Key.
+        """
+        req = RetrieveApiKeyRequest(integration_key, email, password, subdomain)
+        key_response = retrieve_api_key(req)
+        return cls(key_response.subdomain, username=key_response.api_key, password=key_response.api_key)
 
     def get_all_forms(self) -> List[FormData]:
         req = GetAllFormsRequest()
@@ -88,4 +113,20 @@ class WufooClient:
 
     def get_report_fields(self, report_id: str) -> List[FieldData]:
         req = GetReportFieldsRequest(report_identifier=report_id)
+        return self.api_caller.call(req)
+
+    def get_report_widgets(self, report_id: str) -> List[WidgetsData]:
+        req = GetWidgetsRequest(report_identifier=report_id)
+        return self.api_caller.call(req)
+
+    def get_all_users(self) -> List[UserData]:
+        req = GetAllUsersRequest()
+        return self.api_caller.call(req)
+
+    def put_webhook(self, form_id: str, url: str, handshake_key: str, metadata: bool = False) -> PutWebhookResponse:
+        req = PutWebhookRequest(form_id, url, handshake_key, metadata)
+        return self.api_caller.call(req)
+
+    def delete_webhook(self, form_id: str, webhook_hash: str) -> DeleteWebhookResponse:
+        req = DeleteWebhookRequest(form_id, webhook_hash)
         return self.api_caller.call(req)
